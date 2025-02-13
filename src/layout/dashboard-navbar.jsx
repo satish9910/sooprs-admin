@@ -67,7 +67,7 @@ export function DashboardNavbar({ isOpen, setIsOpen }) {
         </div>
         <div className="flex items-center">
           <div className="mr-auto md:mr-4 md:w-56">
-            <Input label="Search" className=" border-gray-300" />
+            <Input label="Search"  className=" !border-gray-300 focus:!border-t-gray-900" />
           </div>
           <IconButton
             variant="text"

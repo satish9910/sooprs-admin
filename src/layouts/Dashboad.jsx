@@ -3,6 +3,7 @@ import Sidebar from "../layout/Sidebar";
 import routes from "../../routes";
 import DashboardNavbar from "../layout/dashboard-navbar";
 import { useState } from "react";
+import LeadDetail from "../pages/dashboard/leads/leadDetail";
 
 const Dashboard = () => {
   // Local state for toggling sidebar visibility on mobile
@@ -11,7 +12,11 @@ const Dashboard = () => {
   return (
     <div className="flex min-h-screen bg-blue-gray-50/50">
       {/* Sidebar */}
-      <div className={`transition-all duration-300 ${isOpen ? "w-72" : "w-0"} md:w-72`}>
+      <div
+        className={`transition-all duration-300 ${
+          isOpen ? "w-72" : "w-0"
+        } md:w-72`}
+      >
         <Sidebar routes={routes} isOpen={isOpen} />
       </div>
 
@@ -21,10 +26,15 @@ const Dashboard = () => {
         <Routes>
           {/* Redirect /dashboard to /dashboard/home */}
           <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="/detail/:id" element={<LeadDetail />} />
           {routes.map(({ layout, pages }) =>
             layout === "dashboard"
               ? pages.map(({ path, element }) => (
-                  <Route key={path} path={path.replace("/", "")} element={element} />
+                  <Route
+                    key={path}
+                    path={path.replace("/", "")}
+                    element={element}
+                  />
                 ))
               : null
           )}

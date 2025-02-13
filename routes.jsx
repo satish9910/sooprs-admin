@@ -10,7 +10,7 @@ import Home from "./src/pages/dashboard/home"; // Fixed path
 import Profile from "./src/pages/dashboard/profile"; // Fixed path
 import Tables from "./src/pages/dashboard/tables"; // Fixed path
 import Notifications from "./src/pages/dashboard/notifications"; // Fixed path
-import Leads from "./src/pages/dashboard/Leads";
+import Leads from "./src/pages/dashboard/leads/Leads"; // Fixed path
 
 const iconClass = "w-5 h-5 text-inherit";
 

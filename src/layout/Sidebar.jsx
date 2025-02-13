@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 function Sidebar({ routes, isOpen }) {
   return (
     <div className={`fixed md:relative inset-y-0 left-0 z-50 transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
-      <Card className="h-screen  w-72 border border-blue-gray-100 bg-gradient-to-br from-gray-800 to-gray-900">
+      <Card className="h-screen w-72 border  border-blue-100 bg-gradient-to-br from-gray-800 to-gray-900">
         <div className="mb-4 flex items-center gap-4 p-4">
           <div className="h-10 w-10 rounded-lg flex items-center justify-center">
             <img src="https://sooprs.com/assets/images/sooprs_white_logo.webp" alt="brand" className="h-full w-full object-cover" />

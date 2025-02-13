@@ -3,6 +3,8 @@ import Dashboard from "./layouts/Dashboad"; // Fixed typo
 import Login from "./auth/login";
 import PrivateRoute from "./components/PrivateRoute";
 
+
+
 function App() {
   return (
     <Routes>
@@ -17,8 +19,11 @@ function App() {
             <Dashboard />
           </PrivateRoute>
         }
-      ></Route>
+      />
+     
+
     </Routes>
+
   );
 }
 
