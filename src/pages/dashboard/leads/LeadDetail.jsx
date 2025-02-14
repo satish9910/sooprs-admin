@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import Toaster from "../../../components/Toaster";
+import { showSuccessToast, showErrorToast } from "../../../components/Toaster";
 import {
   Card,
   Input,
@@ -16,11 +18,7 @@ import {
   MenuItem,
 } from "@material-tailwind/react";
 import Cookies from "js-cookie";
-import {
-  ArrowUpIcon,
-  CheckCircleIcon,
-  EllipsisVerticalIcon,
-} from "@heroicons/react/24/outline";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import NormalTable from "../../../components/NormalTable";
 
 function LeadDetail() {
@@ -37,7 +35,7 @@ function LeadDetail() {
   const [user, setUser] = useState([]);
   const token = Cookies.get("token");
 
-  const fetchLeadDetails = async () => {
+  const fetchLeadDetails = useCallback(async () => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/lead/${id}`,
@@ -55,53 +53,70 @@ function LeadDetail() {
         status: bid.status || 0, // Assuming 1 = Completed, 0 = Pending
       }));
 
-    const fetchseeUser = response.data.data.users.map((user) => ({
-      professional: {
-        name: user.professional.name || "Unknown",
-        image: user.professional.image || "/default-avatar.png",
-      },
-      email: user.professional.email || "No email provided",
-      mobile: user.professional.mobile || "No mobile provided",
-      Credit: user.cost || 0,
-      "Date & Time": new Date(user.created_at).toLocaleString() || "No creation date",
-    }));
+      const fetchseeUser = response.data.data.users.map((user) => ({
+        professional: {
+          name: user.professional.name || "Unknown",
+          image: user.professional.image || "/default-avatar.png",
+        },
+        email: user.professional.email || "No email provided",
+        mobile: user.professional.mobile || "No mobile provided",
+        Credit: user.cost || 0,
+        "Date & Time":
+          new Date(user.created_at).toLocaleString() || "No creation date",
+      }));
 
       setBids(fetchedBids);
       setUser(fetchseeUser);
     } catch (error) {
       console.error("Error fetching lead details:", error);
     }
-  };
+  }, [token, id]);
 
   useEffect(() => {
     fetchLeadDetails();
-  }, [id, token]);
+  }, [id, token, fetchLeadDetails]);
 
   const handleChange = (e) => {
-    setLead({ ...lead, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setLead((prevLead) => ({ ...prevLead, [name]: value }));
   };
+
+  console.log("Lead:", lead);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    const { id, project_title, min_budget, max_budget_amount, description } =
+      lead;
+
+    const params = new URLSearchParams();
+    params.append("id", id);
+    params.append("title", project_title);
+    params.append("min", min_budget);
+    params.append("max", max_budget_amount);
+    params.append("description", description);
+
     try {
-      await axios.put(
-        `${import.meta.env.VITE_BASE_URL}/api/leads/${id}`,
-        lead,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert("Lead updated successfully");
+      await axios.put(`${import.meta.env.VITE_BASE_URL}/api/lead`, params, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/x-www-form-urlencoded", // Correct content type for URLSearchParams
+        },
+      });
+      showSuccessToast("Lead updated successfully!"); // Trigger success toast
     } catch (error) {
       console.error("Error updating lead:", error);
+      showErrorToast("Failed to update lead");
     }
   };
 
   return (
     <>
+      <Toaster />
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-2">
         <Card
           color="transparent"
           shadow={false}
-          className="p-6 border border-blue-gray-100 shadow-sm  rounded-2xl "
+          className="p-6 border border-gray-300 shadow-sm  rounded-2xl "
         >
           <Typography variant="h4" color="blue-gray">
             Update Lead
@@ -161,7 +176,7 @@ function LeadDetail() {
           </form>
         </Card>
 
-        <Card className="border border-blue-gray-100 shadow-sm">
+        <Card className="border border-gray-300 shadow-sm">
           <CardHeader
             floated={false}
             shadow={false}
@@ -171,23 +186,13 @@ function LeadDetail() {
             <Typography variant="h6" color="blue-gray" className="mb-2">
               Get Contect List
             </Typography>
-            <Typography
-              variant="small"
-              className="flex items-center gap-1 font-normal text-blue-gray-600"
-            >
-              <ArrowUpIcon
-                strokeWidth={3}
-                className="h-3.5 w-3.5 text-green-500"
-              />
-              <strong>24%</strong> this month
-            </Typography>
           </CardHeader>
           <CardBody className="pt-0">
             <NormalTable data={user} />
           </CardBody>
         </Card>
 
-        <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
+        <Card className="xl:col-span-2 border border-gray-300 shadow-sm">
           <CardHeader
             floated={false}
             shadow={false}
@@ -197,16 +202,6 @@ function LeadDetail() {
             <div>
               <Typography variant="h6" color="blue-gray" className="mb-1">
                 All Bids
-              </Typography>
-              <Typography
-                variant="small"
-                className="flex items-center gap-1 font-normal text-blue-gray-600"
-              >
-                <CheckCircleIcon
-                  strokeWidth={3}
-                  className="h-4 w-4 text-blue-gray-200"
-                />
-                <strong>30 done</strong> this month
               </Typography>
             </div>
             <Menu placement="left-start">
@@ -226,7 +221,7 @@ function LeadDetail() {
               </MenuList>
             </Menu>
           </CardHeader>
-          <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+          <CardBody className=" px-0 pt-0 pb-2">
             <NormalTable data={bids} />
           </CardBody>
         </Card>

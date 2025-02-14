@@ -29,12 +29,22 @@ const Dashboard = () => {
           <Route path="/detail/:id" element={<LeadDetail />} />
           {routes.map(({ layout, pages }) =>
             layout === "dashboard"
-              ? pages.map(({ path, element }) => (
-                  <Route
-                    key={path}
-                    path={path.replace("/", "")}
-                    element={element}
-                  />
+              ? pages.map(({ path, element, subPages }) => (
+                  <>
+                    <Route
+                      key={path}
+                      path={path.replace("/", "")}
+                      element={element}
+                    />
+                    {/* Handle subpages routing */}
+                    {subPages?.map((subPage) => (
+                      <Route
+                        key={subPage.path}
+                        path={subPage.path}
+                        element={subPage.element || <div>Not Implemented</div>}
+                      />
+                    ))}
+                  </>
                 ))
               : null
           )}
