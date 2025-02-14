@@ -11,7 +11,8 @@ import Profile from "./src/pages/dashboard/profile"; // Fixed path
 import Tables from "./src/pages/dashboard/tables"; // Fixed path
 import Notifications from "./src/pages/dashboard/notifications"; // Fixed path
 import Leads from "./src/pages/dashboard/leads/Leads"; // Fixed path
-import Users from "./src/pages/dashboard/AllUser/Users"; // Fixed path
+import Users from "./src/pages/dashboard/AllUser/Users/Users"; // Fixed path
+import Coupon from "./src/pages/dashboard/Coupon";
 
 
 const iconClass = "w-5 h-5 text-inherit";
@@ -61,6 +62,12 @@ export const routes = [
         name: "Notifications",
         path: "/notifications", // Fixed path
         element: <Notifications />,
+      },
+      {
+        icon: <InformationCircleIcon className={iconClass} />,
+        name: "Coupons",
+        path: "/coupons", // Fixed path
+        element: <Coupon />,
       },
     ],
   },

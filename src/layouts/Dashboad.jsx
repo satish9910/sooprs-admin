@@ -4,6 +4,7 @@ import routes from "../../routes";
 import DashboardNavbar from "../layout/dashboard-navbar";
 import { useState } from "react";
 import LeadDetail from "../pages/dashboard/leads/leadDetail";
+import EditUsers from "../pages/dashboard/AllUser/Users/EditUsers";
 
 const Dashboard = () => {
   // Local state for toggling sidebar visibility on mobile
@@ -27,6 +28,7 @@ const Dashboard = () => {
           {/* Redirect /dashboard to /dashboard/home */}
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/detail/:id" element={<LeadDetail />} />
+          <Route path="/edituser/:id" element={<EditUsers />} />
           {routes.map(({ layout, pages }) =>
             layout === "dashboard"
               ? pages.map(({ path, element, subPages }) => (

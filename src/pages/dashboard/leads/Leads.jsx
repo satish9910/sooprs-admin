@@ -66,7 +66,7 @@ function Leads() {
       key: "flag",
       label: "Origin",
       render: (row) => (
-        <div className="w-8 h-8">
+        <div className="w-8 h-8" title={row.professional?.country_name}>
           {" "}
           <img src={row.professional?.flag} alt="Flag" />{" "}
         </div>
