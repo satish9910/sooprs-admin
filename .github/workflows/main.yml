@@ -33,5 +33,3 @@ jobs:
           script: |
             cd /var/www/html/admin/
             git pull origin main
-            npm install --production
-            pm2 restart app
