@@ -1,9 +1,8 @@
 
 import PropTypes from "prop-types";
-import { Tooltip } from "@material-tailwind/react";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 
-const CustomTable = ({ columns, data, onEdit, onDelete }) => {
+
+const CustomTable = ({ columns, data, }) => {
   return (
     <div className="overflow-x-auto">
       <table className="w-full  table-auto border-collapse text-left ">
@@ -14,7 +13,7 @@ const CustomTable = ({ columns, data, onEdit, onDelete }) => {
                 {col.label}
               </th>
             ))}
-            <th>Action</th>
+     
           </tr>
           
           
@@ -28,18 +27,6 @@ const CustomTable = ({ columns, data, onEdit, onDelete }) => {
                 </td>
               ))}
 
-              <td className="px-4 py-2 flex gap-2 ">  
-                <Tooltip content="Edit">
-                  <button onClick={() => onEdit(row.id)}>
-                    <PencilIcon className="h-5 w-5 text-blue-500" />
-                  </button>
-                </Tooltip>
-                <Tooltip content="Delete">
-                  <button onClick={() => onDelete(row.id)}>
-                    <TrashIcon className="h-5 w-5 text-red-500" />
-                  </button>
-                </Tooltip>
-              </td>
             </tr>
           ))}
         </tbody>

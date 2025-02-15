@@ -9,22 +9,25 @@ import {
   CardHeader,
   Typography,
   Input,
+  Switch,
+  Tooltip,
 } from "@material-tailwind/react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import CustomTable from "../../components/CustomTable";
-import { useNavigate } from "react-router-dom";
+import { TrashIcon } from "@heroicons/react/24/solid";
 
 function Coupon() {
   const [leads, setLeads] = useState([]);
-  const [couponCode, setCouponCode] = useState("");
+  const [couponName, setcouponName] = useState("");
   const [couponType, setCouponType] = useState("1"); // Default to Discount type
   const [credits, setCredits] = useState("");
   const [discountValue, setDiscountValue] = useState(""); // New state for discount value
   const [discountType, setDiscountType] = useState(""); // New state for discount type
+
   const [open, setOpen] = React.useState(false);
+
   const token = Cookies.get("token");
-  const navigate = useNavigate();
 
   const handleOpen = () => setOpen((cur) => !cur);
 
@@ -32,7 +35,7 @@ function Coupon() {
     if (!token) return;
     try {
       const { data } = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/get-coupon-code`,
+        `${import.meta.env.VITE_BASE_URL}/get-coupon-code`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setLeads(data.data);
@@ -45,9 +48,9 @@ function Coupon() {
     if (token) fetchLeads();
   }, [token, fetchLeads]);
 
-  const deleteLead = async (id) => {
+  const onDelete = async (id) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/leads/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/delete-coupon-code/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setLeads(leads.filter((lead) => lead.id !== id));
@@ -56,26 +59,22 @@ function Coupon() {
     }
   };
 
-  const handleEdit = (id) => {
-    navigate(`/detail/${id}`);
-  };
-
   const handleCouponSubmit = async () => {
     try {
       const data = new URLSearchParams();
-      data.append('code_name', couponCode);
-      data.append('type', couponType);
-      data.append('credits', credits);
-      data.append('discount_value', discountValue); // Add discount value
-      data.append('discount_type', discountType); // Add discount type
-      data.append('status', '1'); // Default status to active
+      data.append("code_name", couponName);
+      data.append("type", couponType);
+      data.append("credits", credits);
+      data.append("discount_value", discountValue); // Add discount value
+      data.append("discount_type", discountType); // Add discount type
+      data.append("status", "1"); // Default status to active
 
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/create-coupon-code`,
+        `${import.meta.env.VITE_BASE_URL}/create-coupon-code`,
         data,
         {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            "Content-Type": "application/x-www-form-urlencoded",
             Authorization: `Bearer ${token}`,
           },
         }
@@ -88,32 +87,95 @@ function Coupon() {
     }
   };
 
+
+
+  const onToggleStatus = async (id, currentStatus) => {
+    try {
+      const newStatus = currentStatus === "1" ? "0" : "1"; // Toggle status
+      const data = new URLSearchParams();
+      data.append("status", newStatus);
+  
+      await axios.put(
+        `${import.meta.env.VITE_BASE_URL}/update-coupon-code/${id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      // Update the state after successful update
+      setLeads((prevLeads) =>
+        prevLeads.map((lead) =>
+          lead.id === id ? { ...lead, status: newStatus } : lead
+        )
+      );
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+  
+
   const columns = [
     {
       key: "code_name",
-      label: "Coupon Code",
+      label: "Coupon Name",
       render: (row) => row.code_name,
     },
     {
       key: "type",
       label: "Type",
-      render: (row) => row.type === "1" ? "Discount" : "Other",
+      render: (row) => (row.type === "1" ? "Discount" : "Other"),
     },
     {
       key: "credits",
       label: "Discount",
       render: (row) => row.credits,
     },
-    {
-      key: "status",
-      label: "Status",
-      render: (row) => row.status === "1" ? "Active" : "Inactive",
-    },
+  
     {
       key: "created_at",
       label: "Date & Time",
       render: (row) => new Date(row.created_at).toLocaleString(),
     },
+    {
+      key: "status",
+      label: "Status",
+      render: (row) => (
+        
+          <Switch
+            id={`switch-${row.id}`}
+            checked={row.status === "1"}
+            onChange={() => onToggleStatus(row.id, row.status)}
+            ripple={false}
+            className="h-full w-full bg-red-500 checked:bg-[#2ec946]"
+            containerProps={{
+              className: "w-10 h-4",
+            }}
+            circleProps={{
+              className: "before:hidden left-0.5 border-none",
+            }}
+          />
+       
+      ),
+    },
+    {
+      key: "actions",
+      label: "Actions",
+      render: (row) => (
+        <div >
+    
+          <Tooltip content="Delete">
+            <button onClick={() => onDelete(row.id)}>
+              <TrashIcon className="h-5 w-5 text-red-500" />
+            </button>
+          </Tooltip>
+        </div>
+      ),
+    },
+    
   ];
 
   return (
@@ -133,12 +195,7 @@ function Coupon() {
       </CardHeader>
 
       <CardBody>
-        <CustomTable
-          columns={columns}
-          data={leads}
-          onDelete={deleteLead}
-          onEdit={handleEdit}
-        />
+        <CustomTable columns={columns} data={leads} />
       </CardBody>
 
       <CardFooter className="flex justify-between">
@@ -146,67 +203,68 @@ function Coupon() {
       </CardFooter>
 
       {/* Modal for adding/editing coupon */}
-      <Dialog
-        size="xs"
-        open={open}
-        handler={handleOpen}
-      >
+      <Dialog size="xs" open={open} handler={handleOpen}>
         <Card className="mx-auto w-full max-w-[24rem]">
           <CardBody className="flex flex-col gap-4">
             <Typography variant="h4" color="gray-300">
               Add Coupon Code
             </Typography>
-            <Typography className="mb-3 font-normal" variant="paragraph" color="gray">
+            <Typography
+              className="mb-3 font-normal"
+              variant="paragraph"
+              color="gray"
+            >
               Enter the coupon details.
             </Typography>
-            <Typography className="-mb-2" variant="h6">
-              Coupon Code
-            </Typography>
+
+            {/* Coupon Name */}
             <Input
               label="Coupon Name"
               size="lg"
-              value={couponCode}
-              onChange={(e) => setCouponCode(e.target.value)}
+              value={couponName}
+              onChange={(e) => setcouponName(e.target.value)}
             />
-            <Typography className="-mb-2" variant="h6">
-              Type
-            </Typography>
+
+            {/* Coupon Type Selection */}
             <select
               className="w-full p-2 border rounded-lg"
               value={couponType}
               onChange={(e) => setCouponType(e.target.value)}
             >
-              <option value="1">Discount</option>
-              <option value="2">Other</option>
+              <option value="">Select Coupon Type</option>
+              <option value="1">Refer Code</option>
+              <option value="2">Discount</option>
             </select>
-            <Typography className="-mb-2" variant="h6">
-              Credits
-            </Typography>
-            <Input
-              label="Credits"
-              size="lg"
-              value={credits}
-              onChange={(e) => setCredits(e.target.value)}
-            />
-            <Typography className="-mb-2" variant="h6">
-              Discount Value
-            </Typography>
-            <Input
-              label="Discount Value"
-              size="lg"
-              value={discountValue}
-              onChange={(e) => setDiscountValue(e.target.value)}
-            />
-            <Typography className="-mb-2" variant="h6">
-              Discount Type
-            </Typography>
-            <Input
-              label="Discount Type"
-              size="lg"
-              value={discountType}
-              onChange={(e) => setDiscountType(e.target.value)}
-            />
+
+            {/* Show only if 'Refer Code' is selected */}
+            {couponType === "1" && (
+              <Input
+                label="Credits"
+                size="lg"
+                value={credits}
+                onChange={(e) => setCredits(e.target.value)}
+              />
+            )}
+
+            {/* Show only if 'Discount' is selected */}
+            {couponType === "2" && (
+              <>
+                <Input
+                  label="Discount Value"
+                  size="lg"
+                  value={discountValue}
+                  onChange={(e) => setDiscountValue(e.target.value)}
+                />
+                <Input
+                  label="Discount Type"
+                  size="lg"
+                  value={discountType}
+                  onChange={(e) => setDiscountType(e.target.value)}
+                />
+              </>
+            )}
           </CardBody>
+
           <CardFooter className="pt-0">
             <Button variant="gradient" onClick={handleCouponSubmit} fullWidth>
               Add Coupon

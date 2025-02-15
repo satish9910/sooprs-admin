@@ -38,7 +38,7 @@ function LeadDetail() {
   const fetchLeadDetails = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/lead/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/lead/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       //   console.log("Lead details:", response.data.data.bids);
@@ -96,7 +96,7 @@ function LeadDetail() {
     params.append("description", description);
 
     try {
-      await axios.put(`${import.meta.env.VITE_BASE_URL}/api/lead`, params, {
+      await axios.put(`${import.meta.env.VITE_BASE_URL}/lead`, params, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/x-www-form-urlencoded", // Correct content type for URLSearchParams

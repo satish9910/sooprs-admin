@@ -6,12 +6,14 @@ import {
   CardFooter,
   CardHeader,
   IconButton,
+  Tooltip,
   Typography,
 } from "@material-tailwind/react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import CustomTable from "../../../components/CustomTable";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 function Leads() {
   const [leads, setLeads] = useState([]);
@@ -28,7 +30,7 @@ function Leads() {
       // setLoading(true);
       try {
         const { data } = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/leads?page=${page}&limit=10`,
+          `${import.meta.env.VITE_BASE_URL}/leads?page=${page}&limit=10`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setLeads(data.data);
@@ -48,7 +50,7 @@ function Leads() {
 
   const deleteLead = async (id) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/leads/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/leads/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setLeads(leads.filter((lead) => lead.id !== id));
@@ -125,6 +127,27 @@ function Leads() {
     },
     { key: "bid_count", label: "Bids", width: "w-20" },
     { key: "mobile_count", label: "Mobile Count", width: "w-24" },
+   
+    {
+      key: "actions",
+      label: "Actions",
+      render: (row) => (
+      <td className="px-4 py-2 flex gap-2">
+        <Tooltip content="Edit">
+        <button onClick={() => handleEdit(row.id)}>
+          <PencilIcon className="h-5 w-5 text-blue-500" />
+        </button>
+        </Tooltip>
+        <Tooltip content="Delete">
+        <button onClick={() => deleteLead(row.id)}>
+          <TrashIcon className="h-5 w-5 text-red-500" />
+        </button>
+        </Tooltip>
+      </td>
+      ),
+      width: "w-24",
+    }
+   
   ];
 
   return (
@@ -147,8 +170,7 @@ function Leads() {
         <CustomTable
           columns={columns}
           data={leads}
-          onDelete={deleteLead}
-          onEdit={handleEdit}
+         
         />
       </CardBody>
 

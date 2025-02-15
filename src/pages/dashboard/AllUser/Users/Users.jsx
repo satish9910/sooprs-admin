@@ -7,6 +7,7 @@ import {
   CardHeader,
   IconButton,
   Progress,
+  Tooltip,
   Typography,
 } from "@material-tailwind/react";
 import axios from "axios";
@@ -14,6 +15,7 @@ import Cookies from "js-cookie";
 import CustomTable from "../../../../components/CustomTable";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -57,7 +59,7 @@ function Users() {
 
       try {
         const { data } = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/api/get-all-users`,
+          `${import.meta.env.VITE_BASE_URL}/get-all-users`,
           form.toString(),
           {
             headers: {
@@ -97,7 +99,7 @@ function Users() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/users/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(users.filter((user) => user.id !== id));
@@ -206,6 +208,25 @@ function Users() {
       render: (row) => <div>{row.wallet}</div>,
       width: "w-32",
     },
+    {
+      key: "actions",
+      label: "Actions",
+      render: (row) => (
+        <td className="px-4 py-2 flex gap-2">
+          <Tooltip content="Edit">
+            <button onClick={() => handleEdit(row.id)}>
+              <PencilIcon className="h-5 w-5 text-blue-500" />
+            </button>
+          </Tooltip>
+          <Tooltip content="Delete">
+            <button onClick={() => handleDelete(row.id)}>
+              <TrashIcon className="h-5 w-5 text-red-500" />
+            </button>
+          </Tooltip>
+        </td>
+      ),
+      width: "w-32",
+    }
   ];
 
   return (
@@ -267,8 +288,7 @@ function Users() {
           <CustomTable
             columns={columns}
             data={users}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
+          
           />
         )}
       </CardBody>

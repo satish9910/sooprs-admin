@@ -32,7 +32,7 @@ function EditUsers() {
   const fetchUserDetails = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/get-user/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/get-user/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setUser(response.data.data);
@@ -94,7 +94,7 @@ function EditUsers() {
 
     try {
       await axios.put(
-        `${import.meta.env.VITE_BASE_URL}/api/update-user/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/update-user/${id}`,
         user,
         {
           headers: {
