@@ -14,6 +14,9 @@ import Notifications from "./src/pages/dashboard/notifications"; // Fixed path
 import Leads from "./src/pages/dashboard/leads/Leads"; // Fixed path
 import Users from "./src/pages/dashboard/AllUser/Users/Users"; // Fixed path
 import Coupon from "./src/pages/dashboard/Coupon";
+import Professional from "./src/pages/dashboard/AllUser/professional/Professional";
+import Client from "./src/pages/dashboard/AllUser/client/Client";
+import Agency from "./src/pages/dashboard/AllUser/agency/Agency";
 
 
 const iconClass = "w-5 h-5 text-inherit";
@@ -41,9 +44,9 @@ export const routes = [
         path: "/users", // Main path for "All Users" without any element
         subPages: [
           { name: "Users", path: "/users/all", element: <Users /> },
-          { name: "Professional", path: "/users/professional" },
-          { name: "Client", path: "/users/client" },
-          { name: "Agency", path: "/users/agency" },
+          { name: "Professional", path: "/users/professional" , element: <Professional /> },
+          { name: "Client", path: "/users/client",  element: <Client /> },
+          { name: "Agency", path: "/users/agency" , element: <Agency /> },
         ],
       },
       {

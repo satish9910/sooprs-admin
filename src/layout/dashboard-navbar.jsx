@@ -75,7 +75,7 @@ export function DashboardNavbar({ isOpen, setIsOpen }) {
           <IconButton
             variant="text"
             color="gray"
-            className="grid xl:hidden"
+            className="grid md:hidden"
             // Removed the use of setOpenSidenav
             onClick={() => setIsOpen(!isOpen)}
           >
