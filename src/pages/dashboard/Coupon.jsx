@@ -16,6 +16,9 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import CustomTable from "../../components/CustomTable";
 import { TrashIcon } from "@heroicons/react/24/solid";
+import Toaster from "../../components/Toaster";
+
+
 
 function Coupon() {
   const [leads, setLeads] = useState([]);
@@ -50,9 +53,12 @@ function Coupon() {
 
   const onDelete = async (id) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_BASE_URL}/delete-coupon-code/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/delete-coupon-code/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setLeads(leads.filter((lead) => lead.id !== id));
     } catch (error) {
       console.error("Error deleting lead:", error);
@@ -69,7 +75,7 @@ function Coupon() {
       data.append("discount_type", discountType); // Add discount type
       data.append("status", "1"); // Default status to active
 
-      const response = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BASE_URL}/create-coupon-code`,
         data,
         {
@@ -79,22 +85,25 @@ function Coupon() {
           },
         }
       );
-      console.log("Coupon added:", response.data);
+
       fetchLeads(); // Fetch leads again to include the newly added coupon
+      setcouponName(""); // Clear the input fields
+      setCouponType("");
+      setCredits("");
+      setDiscountValue("");
+      setDiscountType("");
       handleOpen(); // Close modal after submission
     } catch (error) {
       console.error("Error submitting coupon:", error);
     }
   };
 
-
-
   const onToggleStatus = async (id, currentStatus) => {
     try {
       const newStatus = currentStatus === "1" ? "0" : "1"; // Toggle status
       const data = new URLSearchParams();
       data.append("status", newStatus);
-  
+
       await axios.put(
         `${import.meta.env.VITE_BASE_URL}/update-coupon-code/${id}`,
         data,
@@ -105,18 +114,26 @@ function Coupon() {
           },
         }
       );
-  
       // Update the state after successful update
       setLeads((prevLeads) =>
         prevLeads.map((lead) =>
           lead.id === id ? { ...lead, status: newStatus } : lead
         )
       );
+      // Show toaster notification
+      Toaster.show({
+        message: `Coupon ${newStatus === "1" ? "activated" : "deactivated"} successfully`,
+        type: "success",
+      });
     } catch (error) {
       console.error("Error updating status:", error);
+      // Show error toaster notification
+      Toaster.show({
+        message: "Error updating coupon status",
+        type: "error",
+      });
     }
   };
-  
 
   const columns = [
     {
@@ -127,14 +144,25 @@ function Coupon() {
     {
       key: "type",
       label: "Type",
-      render: (row) => (row.type === "1" ? "Discount" : "Other"),
+      render: (row) => (row.type === "1" ? " REFER CODE" : "DISCOUNT"),
     },
     {
       key: "credits",
-      label: "Discount",
-      render: (row) => row.credits,
+      label: "Credits",
+      render: (row) => row.credits || "N/A",
     },
-  
+
+    {
+      key: "discount_value",
+      label: "Discount Value",
+      render: (row) => row.discount_value || "N/A",
+    },
+    {
+      key: "discount_type",
+      label: "Discount Type",
+      render: (row) =>
+        (row.discount_type === "1" ? "FLAT" : "PERCENTAGE") || "N/A",
+    },
     {
       key: "created_at",
       label: "Date & Time",
@@ -144,29 +172,26 @@ function Coupon() {
       key: "status",
       label: "Status",
       render: (row) => (
-        
-          <Switch
-            id={`switch-${row.id}`}
-            checked={row.status === "1"}
-            onChange={() => onToggleStatus(row.id, row.status)}
-            ripple={false}
-            className="h-full w-full bg-red-500 checked:bg-[#2ec946]"
-            containerProps={{
-              className: "w-10 h-4",
-            }}
-            circleProps={{
-              className: "before:hidden left-0.5 border-none",
-            }}
-          />
-       
+        <Switch
+          id={`switch-${row.id}`}
+          checked={row.status === "1"}
+          onChange={() => onToggleStatus(row.id, row.status)}
+          ripple={false}
+          className="h-full w-full bg-red-500 checked:bg-[#2ec946]"
+          containerProps={{
+            className: "w-10 h-4",
+          }}
+          circleProps={{
+            className: "before:hidden left-0.5 border-none",
+          }}
+        />
       ),
     },
     {
       key: "actions",
       label: "Actions",
       render: (row) => (
-        <div >
-    
+        <div>
           <Tooltip content="Delete">
             <button onClick={() => onDelete(row.id)}>
               <TrashIcon className="h-5 w-5 text-red-500" />
@@ -175,7 +200,6 @@ function Coupon() {
         </div>
       ),
     },
-    
   ];
 
   return (
@@ -203,26 +227,26 @@ function Coupon() {
       </CardFooter>
 
       {/* Modal for adding/editing coupon */}
-      <Dialog size="xs" open={open} handler={handleOpen}>
-        <Card className="mx-auto w-full max-w-[24rem]">
-          <CardBody className="flex flex-col gap-4">
-            <Typography variant="h4" color="gray-300">
-              Add Coupon Code
-            </Typography>
-            <Typography
-              className="mb-3 font-normal"
-              variant="paragraph"
-              color="gray"
-            >
-              Enter the coupon details.
-            </Typography>
+        <Dialog size="xs" open={open} handler={handleOpen}  className="bg-transparent shadow-none">  
+          <Card className="mx-auto w-full max-w-[24rem] bg-white">
+            <CardBody className="flex flex-col gap-4">
+          <Typography variant="h4" color="gray-300">
+            Add Coupon Code
+          </Typography>
+          <Typography
+            className="mb-3 font-normal !important"
+            variant="paragraph"
+            color="gray"
+          >
+            Enter the coupon details.
+          </Typography>
 
-            {/* Coupon Name */}
+          {/* Coupon Name */}
             <Input
               label="Coupon Name"
               size="lg"
               value={couponName}
-              onChange={(e) => setcouponName(e.target.value)}
+              onChange={(e) => setcouponName(e.target.value.toUpperCase())}
             />
 
             {/* Coupon Type Selection */}
@@ -255,12 +279,15 @@ function Coupon() {
                   value={discountValue}
                   onChange={(e) => setDiscountValue(e.target.value)}
                 />
-                <Input
-                  label="Discount Type"
-                  size="lg"
+                <select
+                  className="w-full p-2 border rounded-lg"
                   value={discountType}
                   onChange={(e) => setDiscountType(e.target.value)}
-                />
+                >
+                  <option value="">Select Discount Type</option>
+                  <option value="1">Flat</option>
+                  <option value="2">Percentage</option>
+                </select>
               </>
             )}
           </CardBody>

@@ -27,7 +27,7 @@ const NormalTable = ({ data }) => {
           {data.map((row, rowIndex) => (
             <tr key={rowIndex} className="hover:bg-gray-50">
               {columns.map((col, colIndex) => (
-                <td key={colIndex} className=" border-b py-3 px-5 text-blue-gray-700">
+                <td key={colIndex} className=" border-b border-gray-300 py-3 px-5 text-blue-gray-700">
                   {col === "professional" && row[col]?.image ? (
                     <div className="flex items-center gap-4">
                       <Avatar src={row[col]?.image || "/default-avatar.png"} alt={row[col]?.name || "No Name"} size="sm" />

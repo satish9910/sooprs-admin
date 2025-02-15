@@ -5,6 +5,7 @@ import {
   InformationCircleIcon,
   ArchiveBoxArrowDownIcon,
   UsersIcon,
+  TicketIcon,
 } from "@heroicons/react/24/solid";
 import Home from "./src/pages/dashboard/home"; // Fixed path
 import Profile from "./src/pages/dashboard/profile"; // Fixed path
@@ -64,7 +65,7 @@ export const routes = [
         element: <Notifications />,
       },
       {
-        icon: <InformationCircleIcon className={iconClass} />,
+        icon: <TicketIcon className={iconClass} />,
         name: "Coupons",
         path: "/coupons", // Fixed path
         element: <Coupon />,

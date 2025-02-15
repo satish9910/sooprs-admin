@@ -20,7 +20,7 @@ import {
   CreditCardIcon,
   Bars3Icon,
 } from "@heroicons/react/24/solid";
-import {  XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import PropTypes from "prop-types";
@@ -67,7 +67,10 @@ export function DashboardNavbar({ isOpen, setIsOpen }) {
         </div>
         <div className="flex items-center">
           <div className="mr-auto md:mr-4 md:w-56">
-            <Input label="Search"  className=" !border-gray-300 focus:!border-t-gray-900" />
+            <Input
+              label="Search"
+               className="border border-gray-500 !border-t-gray-500 focus:!border-gray-700 px-3 py-2 focus:border-t-0 focus:outline-none focus:ring-0"
+            />
           </div>
           <IconButton
             variant="text"
@@ -76,14 +79,13 @@ export function DashboardNavbar({ isOpen, setIsOpen }) {
             // Removed the use of setOpenSidenav
             onClick={() => setIsOpen(!isOpen)}
           >
-             {isOpen ? (
+            {isOpen ? (
               <XMarkIcon className="h-6 w-6 text-gray-700" />
             ) : (
               <Bars3Icon className="h-6 w-6 text-gray-700" />
             )}
           </IconButton>
 
-       
           <Button
             onClick={handleLogout}
             variant="text"
@@ -96,7 +98,6 @@ export function DashboardNavbar({ isOpen, setIsOpen }) {
           <IconButton variant="text" color="gray" className="grid xl:hidden">
             <UserCircleIcon className="h-5 w-5 text-gray-500" />
           </IconButton>
-        
 
           <Menu>
             <MenuHandler>
@@ -190,6 +191,5 @@ DashboardNavbar.propTypes = {
 };
 
 DashboardNavbar.displayName = "/src/widgets/layout/dashboard-navbar.jsx";
-
 
 export default DashboardNavbar;

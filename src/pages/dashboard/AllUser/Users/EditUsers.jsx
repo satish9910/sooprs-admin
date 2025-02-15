@@ -121,7 +121,7 @@ function EditUsers() {
             {/* Name */}
             <div className="flex flex-col">
               <Typography variant="h6">Name</Typography>
-              <Input size="lg" name="name" value={user.name} onChange={handleChange} placeholder="Enter Name" />
+              <Input size="lg" name="name" value={user.name}  onChange={handleChange} placeholder="Enter Name" />
             </div>
 
             {/* Email */}
@@ -147,11 +147,12 @@ function EditUsers() {
               <Typography variant="h6">City</Typography>
               <Input size="lg" name="city" value={user.city} onChange={handleChange} placeholder="Enter City" />
             </div>
+            
 
             {/* Area Code */}
             <div className="flex flex-col">
               <Typography variant="h6">Area Code</Typography>
-              <Input type="number" size="lg" name="area_code" value={user.area_code} onChange={handleChange} placeholder="Enter Area Code" />
+              <Input type="number" size="lg" name="area_code"  value={user.area_code} onChange={handleChange} placeholder="Enter Area Code" />
             </div>
 
             {/* Country */}
