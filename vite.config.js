@@ -10,7 +10,9 @@ export default defineConfig({
   ],
   base:"/",
   resolve: {
-    alias: [{ find: "@", replacement: "/src" }],
+    alias: {
+      '@': '/src', // Ensure your imports match the alias if used
+    },
 
   },
   
