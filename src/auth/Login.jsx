@@ -22,19 +22,22 @@ const Login = () => {
       // formData.append("password", password);
 
       const res = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/auth/login`,
+        `${import.meta.env.VITE_BASE_URL}/auth/login`,
         { email: email, password: password },
         {
           withCredentials: true, // Ensure cookies are included
         }
       );
 
-      if (res.status == 200) {
+      if (res.data.success) {
+        console.log("Login Success");
         const token = res.data.data.token;
         console.log("Response:", token);
 
         // Store the token in cookies
         Cookies.set("token", token, { expires: 7, secure: true, sameSite: "Strict" });
+        console.log('cookies set');
+        
         // Redirect to dashboard
         navigate("/");
       } else {
