@@ -3,9 +3,10 @@ import Sidebar from "../layout/Sidebar";
 import routes from "../../routes";
 import DashboardNavbar from "../layout/dashboard-navbar";
 import { useState } from "react";
-import LeadDetail from "../pages/dashboard/leads/leadDetail";
+
 import EditUsers from "../pages/dashboard/AllUser/Users/EditUsers";
 import AddSubscriber from "../pages/dashboard/subscriber/AddSubscriber";
+import LeadDetail from "../pages/dashboard/leads/LeadDetail";
 
 const Dashboard = () => {
   // Local state for toggling sidebar visibility on mobile
