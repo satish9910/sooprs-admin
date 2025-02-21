@@ -1,7 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./layouts/Dashboad"; // Fixed typo
-import Login from "./auth/login";
+
 import PrivateRoute from "./components/PrivateRoute";
+import Login from "./auth/Login";
 
 
 
