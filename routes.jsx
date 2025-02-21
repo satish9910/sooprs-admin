@@ -56,21 +56,21 @@ export const routes = [
       {
         icon: <UsersIcon className={iconClass} />,
         name: "Leads",
-        path: "/users", // Main path for "All Users" without any element
+        path: "/myleads", // Main path for "All Users" without any element
         subPages: [
-          { name: "Leads", path: "/users/all", element: <Users /> },
-          { name: "Lead Sharing", path: "/users/professional" , element: <Professional /> },
-          { name: "Active Leads", path: "/users/client",  element: <Client /> },
+          { name: "Leads", path: "/lmyeads/all", element: <Users /> },
+          { name: "Lead Sharing", path: "/myleads/professional" , element: <Professional /> },
+          { name: "Active Leads", path: "/myleads/client",  element: <Client /> },
          
         ],
       },
       {
         icon: <UsersIcon className={iconClass} />,
         name: "Gigs",
-        path: "/users", // Main path for "All Users" without any element
+        path: "/gigs", // Main path for "All Users" without any element
         subPages: [
-          { name: "All Gigs", path: "/users/all", element: <Users /> },
-          { name: "Gigs Purchase", path: "/users/professional" , element: <Professional /> },
+          { name: "All Gigs", path: "/gigs/all", element: <Users /> },
+          { name: "Gigs Purchase", path: "/gigs/professional" , element: <Professional /> },
          
          
         ],
